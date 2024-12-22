@@ -46,8 +46,4 @@ const userSchema = timeStampSchema({
 })
 const User = mongooseModel("User", userSchema)
 
-userSchema.pre("save", function (...args) {
-    console.log(args, "this")
-})
-
 export default User;

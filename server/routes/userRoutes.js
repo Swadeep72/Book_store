@@ -24,8 +24,7 @@ userRoutes.post("/sign-up", async (req, res) => {
         res.status(500).send({ status: 0, message: error?.message })
     }
 })
-
-userRoutes.post("/sign-in", userAuth, async (req, res) => {
+userRoutes.post("/sign-in", async (req, res) => {
     try {
         const { userName, password } = req.body;
         const user = await User.findOne({ userName });
@@ -44,6 +43,22 @@ userRoutes.post("/sign-in", userAuth, async (req, res) => {
         console.log(error)
         res.status(500).send({ status: 0, message: error?.message })
     }
+})
+
+userRoutes.use(userAuth);
+
+userRoutes.put("/update-address", async (req, res) => {
+  try {
+      const { address } = req?.body;
+      const user = await User.findByIdAndUpdate(req.user._id, { address }, { new: true });
+      if (user) {
+          res.send({ status: 1, message: "Address updated successfully.", data: user })
+      } else {
+          res.send({ status: 0, message: "Failed to update address." })
+      }
+  } catch (error) {
+    res.status(500).send({ status: 0, message: error?.message })
+  }
 })
 
 export default userRoutes;
