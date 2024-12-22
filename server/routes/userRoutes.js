@@ -3,6 +3,7 @@ import { validateUser } from "../utils/validationUtils.js";
 import User from "../models/userModel.js";
 import { compare, hash } from "bcrypt"
 import jwt from "jsonwebtoken";
+import userAuth from "../middlewares/auth.js";
 const userRoutes = express()
 
 userRoutes.post("/sign-up", async (req, res) => {
@@ -24,7 +25,7 @@ userRoutes.post("/sign-up", async (req, res) => {
     }
 })
 
-userRoutes.post("/sign-in", async (req, res) => {
+userRoutes.post("/sign-in", userAuth, async (req, res) => {
     try {
         const { userName, password } = req.body;
         const user = await User.findOne({ userName });
@@ -38,8 +39,9 @@ userRoutes.post("/sign-in", async (req, res) => {
         const token = jwt.sign({ id: user?._id }, process.env.SECRET_KEY, {
             expiresIn: "1d"
         })
-        res.cookie(token).send({ status: 1, message: "Sign in successful.", data: user })
+        res.cookie("token", token).send({ status: 1, message: "Sign in successful.", data: user })
     } catch (error) {
+        console.log(error)
         res.status(500).send({ status: 0, message: error?.message })
     }
 })
