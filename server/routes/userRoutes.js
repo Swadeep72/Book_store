@@ -10,8 +10,9 @@ userRoutes.post("/sign-up", async (req, res) => {
     try {
         const { userName, email, password, address } = req.body;
         const validation = validateUser({ userName, email, password, address })
+        console.log("object")
         if (validation) {
-            const hashedPassword = await hash(password, process.env.HASH_ROUNDS)
+            const hashedPassword = await hash(password, 10)
             const user = new User({ ...req.body, password: hashedPassword })
             await user.save()
             if (user) {
@@ -24,6 +25,7 @@ userRoutes.post("/sign-up", async (req, res) => {
         res.status(500).send({ status: 0, message: error?.message })
     }
 })
+
 userRoutes.post("/sign-in", async (req, res) => {
     try {
         const { userName, password } = req.body;
@@ -48,17 +50,17 @@ userRoutes.post("/sign-in", async (req, res) => {
 userRoutes.use(userAuth);
 
 userRoutes.put("/update-address", async (req, res) => {
-  try {
-      const { address } = req?.body;
-      const user = await User.findByIdAndUpdate(req.user._id, { address }, { new: true });
-      if (user) {
-          res.send({ status: 1, message: "Address updated successfully.", data: user })
-      } else {
-          res.send({ status: 0, message: "Failed to update address." })
-      }
-  } catch (error) {
-    res.status(500).send({ status: 0, message: error?.message })
-  }
+    try {
+        const { address } = req?.body;
+        const user = await User.findByIdAndUpdate(req.user._id, { address }, { new: true });
+        if (user) {
+            res.send({ status: 1, message: "Address updated successfully.", data: user })
+        } else {
+            res.send({ status: 0, message: "Failed to update address." })
+        }
+    } catch (error) {
+        res.status(500).send({ status: 0, message: error?.message })
+    }
 })
 
 export default userRoutes;

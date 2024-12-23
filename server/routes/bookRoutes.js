@@ -80,9 +80,18 @@ bookRoutes.route("/book/:bookId")
 bookRoutes.get("/get-books/:limit", async (req, res) => {
     try {
         const limit = req.params.limit;
-        const query = Book.find().sort({ createdAt: -1 });
-        if (limit) query.limit(4);
+        const query = Book.find();
+        if (limit) query.limit(limit);
         const books = await query;
+        res.status(200).json({ status: 1, data: books })
+    } catch (error) {
+        res.status(500).send({ status: 0, message: error?.message })
+    }
+})
+
+bookRoutes.get("/get-books", async (req, res) => {
+    try {
+        const books = await Book.find().sort({ createdAt: -1 });
         res.status(200).json({ status: 1, data: books })
     } catch (error) {
         res.status(500).send({ status: 0, message: error?.message })
