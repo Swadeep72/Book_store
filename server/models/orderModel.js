@@ -6,16 +6,16 @@ const orderSchema = timeStampSchema({
         type: mongoose.Types.ObjectId,
         ref: "User"
     },
-    book: {
+    books: [{
         type: mongoose.Types.ObjectId,
         ref: "Book"
-    },
+    }],
     status: {
         type: String,
         default: "Order Placed",
         enum: ["Order Placed", "Delivered", "Cancelled", "Out for delivery"]
     }
 })
-const Order = mongooseModel("Order",orderSchema)
+const Order = mongooseModel("Order", orderSchema)
 
 export default Order;
