@@ -8,8 +8,8 @@ import cartRouter from "./routes/cartRoutes.js"
 
 export default express.Router()
     .use("/users", userRoutes)
-    .use(userAuth)
     .use("/books", bookRoutes)
+    .use(userAuth)
     .use("/orders", orderRoutes)
     .use("/favourites", favouriteRouter)
     .use("/carts", cartRouter)
