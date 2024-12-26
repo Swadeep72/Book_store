@@ -14,19 +14,17 @@ const Cart = lazy(() => import("./pages/Cart"))
 export default function App() {
   return (
     <div className="bg-zinc-900">
-      <Router>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/explore" element={<AllBooks />} />
-          <Route path="/sign-up" element={<Signup />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/view-book-details/:id" element={<BookDetails />} />
-          <Route path="/profile" element={<Profile />} />
-        </Routes>
-        <Footer />
-      </Router>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/explore" element={<AllBooks />} />
+        <Route path="/sign-up" element={<Signup />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/view-book-details/:id" element={<BookDetails />} />
+        <Route path="/profile" element={<Profile />} />
+      </Routes>
+      <Footer />
     </div>
   )
 }

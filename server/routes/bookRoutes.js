@@ -4,12 +4,9 @@ import Book from "../models/bookModel.js";
 import userAuth from "../middlewares/auth.js";
 const bookRoutes = express()
 
-bookRoutes.get("/get-books/:limit", async (req, res) => {
+bookRoutes.get("/get-recent-books", async (req, res) => {
     try {
-        const limit = req.params.limit;
-        const query = Book.find().sort({ createdAt: -1 });
-        if (limit) query.limit(limit);
-        const books = await query;
+        const books = await Book.find().sort({ createdAt: -1 }).limit(4);
         res.status(200).send({ status: 1, data: books })
     } catch (error) {
         res.status(500).send({ status: 0, message: error?.message })

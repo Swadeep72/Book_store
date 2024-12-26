@@ -1,22 +1,19 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { getBook } from '../../redux/features/bookSlice';
+import { useDispatch } from 'react-redux';
+import { GrLanguage } from "react-icons/gr"
 
 const BookDetails = () => {
+
     const { id } = useParams();
     const [book, setBook] = useState([])
+    const dispatch = useDispatch()
 
     useEffect(() => {
-        const fetchBook = async () => {
-            try {
-                const response = await axios.get(`http://localhost:1000/books/book/${id}`)
-                console.log(response)
-                if (response.status === 200) {
-                    setBook(response?.data?.data)
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        fetchBook()
+        dispatch(getBook(id)).unwrap()
+            .then(res => res?.status ? setBook(res?.data) : toast.error(res?.message))
+            .catch(err => console.log(err))
     }, [])
 
     return (
@@ -33,9 +30,7 @@ const BookDetails = () => {
                     <p className='mt-4 text-zinc-100 text-3xl font-semibold'>Price : $ {book?.price}</p>
                 </div>
             </div>}
-            {
-                !book && <div className='flex justify-center items-center bg-zinc-900 h-screen'><Loader /></div>
-            }
+            {!book && <div className='flex justify-center items-center bg-zinc-900 h-screen'><Loader /></div>}
         </>
     )
 }

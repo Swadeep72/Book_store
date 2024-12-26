@@ -4,6 +4,7 @@ import User from "../models/userModel.js";
 const userAuth = async (req, res, next) => {
     try {
         const { token } = req.cookies;
+        console.log(token)
         if (!token) {
             throw new Error("Token is invalid.")
         }
@@ -16,7 +17,7 @@ const userAuth = async (req, res, next) => {
         req.user = user
         next()
     } catch (error) {
-        console.log(error)
+        console.log(error, "hiii")
         res.status(400).send({ status: 0, message: error?.message })
     }
 }
