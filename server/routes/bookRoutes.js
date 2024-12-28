@@ -16,15 +16,13 @@ bookRoutes.get("/get-books", TryCatch(async (req, res) => {
     res.status(200).send({ status: 1, data: books })
 }))
 
-bookRoutes.post("/add-book", userAuth, TryCatch(async (req, res) => {
+bookRoutes.post("/add-book", userAuth, TryCatch(async (req, res, next) => {
     if (req.user.role !== "admin") {
         return res.status(403).send({ status: 0, message: "You are not authorized to add a book" })
     }
     const { url, title, author, description, price, language } = req.body;
     const validate = validateBook({ url, title, author, description, price, language })
-    if (!validate) {
-        throw new Error("Incorrect details.")
-    }
+    if (!validate) return next([200, "Incorrect details."])
     const book = new Book({ url, title, author, description, price, language })
     await book.save()
     if (book) {
@@ -35,40 +33,30 @@ bookRoutes.post("/add-book", userAuth, TryCatch(async (req, res) => {
 }))
 
 bookRoutes.route("/book/:bookId")
-    .get(TryCatch(async (req, res) => {
+    .get(TryCatch(async (req, res, next) => {
         const bookId = req.params.bookId;
         const book = await Book.findById(bookId);
-        if (!book) {
-            throw new Error("Book not found")
-        }
+        if (!book) return next([200, "Book not found"])
         res.status(200).send({ status: 1, data: book })
     }))
-    .put(userAuth, TryCatch(async (req, res) => {
+    .put(userAuth, TryCatch(async (req, res, next) => {
         if (req.user.role !== "admin") {
             return res.status(403).send({ status: 0, message: "You are not authorized to update a book" })
         }
         const bookId = req.params.bookId;
         const { url, title, author, description, price, language } = req.body;
         const validate = validateBook({ url, title, author, description, price, language })
-        if (!validate) {
-            throw new Error("Incorrect details.")
-        }
+        if (!validate) return next([200, "Incorrect details."])
         const book = await Book.findById(bookId);
-        if (!book) {
-            throw new Error("Book not found")
-        }
+        if (!book) return next([200, "Book not found"])
         await Book.findByIdAndUpdate(bookId, { url, title, author, description, price, language })
         res.status(200).send({ status: 1, message: "Book updated successfully" })
     }))
-    .delete(userAuth, TryCatch(async (req, res) => {
-        if (req.user.role !== "admin") {
-            return res.status(403).send({ status: 0, message: "You are not authorized to delete a book" })
-        }
+    .delete(userAuth, TryCatch(async (req, res, next) => {
+        if (req.user.role !== "admin") return next([403, "You are not authorized to delete a book"])
         const bookId = req.params.bookId;
         const book = await Book.findById(bookId);
-        if (!book) {
-            throw new Error("Book not found")
-        }
+        if (!book) return next("Book not found")
         const deletedBook = await Book.findByIdAndDelete(bookId)
         console.log(deletedBook)
         res.status(200).send({ status: 1, message: "Book deleted successfully" })

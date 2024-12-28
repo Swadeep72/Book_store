@@ -4,22 +4,18 @@ import { TryCatch } from "../utils/helperUtils.js";
 
 const favouriteRouter = express();
 
-favouriteRouter.post("/add-to-favourites", TryCatch(async (req, res) => {
+favouriteRouter.post("/add-to-favourites", TryCatch(async (req, res, next) => {
     const user = req.user;
     const { bookId } = req.body;
-    if (user?.favourites?.includes(bookId?.toString())) {
-        throw new Error("Book is already in your favourites");
-    }
+    if (user?.favourites?.includes(bookId?.toString())) return next([200, "Book is already in your favourites"]);
     await User.findByIdAndUpdate(user?._id, { $set: { favourites: [...user.favourites, bookId] } });
     res.send({ status: 1, message: "Book added to your favourites" })
 }))
 
-favouriteRouter.post("/remove-from-favourites", TryCatch(async (req, res) => {
+favouriteRouter.post("/remove-from-favourites", TryCatch(async (req, res, next) => {
     const user = req.user;
     const { bookId } = req.body;
-    if (!user?.favourites?.includes(bookId?.toString())) {
-        throw new Error("Book is already not in your favourites");
-    }
+    if (!user?.favourites?.includes(bookId?.toString())) return next([200, "Book is already not in your favourites"]);
     await User.findByIdAndUpdate(user?._id, { $pull: { favourites: bookId } });
     res.send({ status: 1, message: "Book removed from your favourites" })
 }))

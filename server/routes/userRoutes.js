@@ -22,16 +22,12 @@ userRoutes.post("/sign-up", TryCatch(async (req, res) => {
     }
 }))
 
-userRoutes.post("/sign-in", TryCatch(async (req, res) => {
+userRoutes.post("/sign-in", TryCatch(async (req, res, next) => {
     const { userName, password } = req.body;
     const user = await User.findOne({ userName });
-    if (!user) {
-        throw new Error("Invalid Credentials")
-    }
+    if (!user) return next([200, "Invalid Credentials"])
     const isValidPassword = await compare(password, user.password)
-    if (!isValidPassword) {
-        throw new Error("Invalid Credentials")
-    }
+    if (!isValidPassword) return next([200, "Invalid Credentials"])
     const token = jwt.sign({ id: user?._id }, process.env.SECRET_KEY, {
         expiresIn: "1d"
     })

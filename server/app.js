@@ -4,6 +4,7 @@ import connectDB from "./db/index.js";
 import router from "./router.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import { error } from "./middlewares/error.js";
 
 config();
 const app = express();
@@ -18,3 +19,4 @@ connectDB()
     .catch(error => console.log(error));
 
 app.use("/", router)
+app.use(error)
