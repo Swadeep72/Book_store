@@ -1,4 +1,4 @@
-export function error(err, req, res, next) {
+export default function (err, req, res, next) {
     console.log('Error object:', err);
     res.status(err?.[0] || 500).json({
         status: 0,
