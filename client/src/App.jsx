@@ -1,5 +1,8 @@
-import { lazy } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import Loader from "./components/Loader/Loader";
+import { useDispatch } from "react-redux";
+import { login } from "../redux/features/userSlice";
 
 const BookDetails = lazy(() => import("./pages/BookDetails"))
 const Footer = lazy(() => import("./components/Footer/Footer"))
@@ -12,18 +15,29 @@ const Profile = lazy(() => import("./pages/Profile"))
 const Cart = lazy(() => import("./pages/Cart"))
 
 export default function App() {
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    document.body.classList.add("bg-zinc-900")
+    if (localStorage.getItem("token") || localStorage.getItem("user")) {
+      dispatch(login())
+    }
+  }, [])
+
   return (
     <div className="bg-zinc-900">
       <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/explore" element={<AllBooks />} />
-        <Route path="/sign-up" element={<Signup />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/view-book-details/:id" element={<BookDetails />} />
-        <Route path="/profile" element={<Profile />} />
-      </Routes>
+      <Suspense fallback={<Loader />}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/explore" element={<AllBooks />} />
+          <Route path="/sign-up" element={<Signup />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/view-book-details/:id" element={<BookDetails />} />
+          <Route path="/profile" element={<Profile />} />
+        </Routes>
+      </Suspense>
       <Footer />
     </div>
   )
