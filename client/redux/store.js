@@ -14,7 +14,7 @@ const store = configureStore({
     order: orderSlice.reducer,
     favourite: favouriteSlice.reducer,
   },
-  middleware: mid => mid().concat(errorMiddleware)
+  // middleware: mid => mid().concat(errorMiddleware)
 })
 
 export default store;

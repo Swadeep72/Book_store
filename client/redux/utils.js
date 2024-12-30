@@ -8,7 +8,7 @@ export const TryCatch = async (url, args, method) => {
             return response?.data;
         }
     } catch (error) {
-        throw error
+        return error?.response?.data
     }
 }
 
