@@ -26,7 +26,8 @@ const Login = () => {
                             console.log(res)
                             if (res?.status) {
                                 toast.success(res?.message)
-                                localStorage.setItem("token",res?.data?.token)
+                                document.cookie = `token=${res?.data?.token}`;
+                                localStorage.setItem("token", res?.data?.token)
                                 localStorage.setItem("user", JSON.stringify(res?.data))
                                 navigate("/");
                             } else {

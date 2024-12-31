@@ -3,6 +3,9 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Loader from "./components/Loader/Loader";
 import { useDispatch } from "react-redux";
 import { login } from "../redux/features/userSlice";
+import Favourites from "./components/Profile/Favourites";
+import OrderHistory from "./components/Profile/OrderHistory";
+import Settings from "./components/Profile/Settings";
 
 const BookDetails = lazy(() => import("./pages/BookDetails"))
 const Footer = lazy(() => import("./components/Footer/Footer"))
@@ -19,7 +22,7 @@ export default function App() {
   const dispatch = useDispatch();
   useEffect(() => {
     document.body.classList.add("bg-zinc-900")
-    if (localStorage.getItem("token") || localStorage.getItem("user")) {
+    if (localStorage.getItem("token") && localStorage.getItem("user")) {
       dispatch(login())
     }
   }, [])
@@ -35,7 +38,11 @@ export default function App() {
           <Route path="/sign-up" element={<Signup />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/view-book-details/:id" element={<BookDetails />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile" element={<Profile />} >
+            <Route index element={<Favourites />} />
+            <Route path="/profile/orderhistory" element={<OrderHistory/>}/>
+            <Route path="/profile/settings" element={<Settings />} />
+          </Route>
         </Routes>
       </Suspense>
       <Footer />

@@ -31,16 +31,25 @@ userRoutes.post("/sign-in", TryCatch(async (req, res, next) => {
     const token = jwt.sign({ id: user?._id }, process.env.SECRET_KEY, {
         expiresIn: "1d"
     })
-    res.cookie("token", token, {
+    res/* .cookie("token", token, {
         path: "/",
         httpOnly: true,   // Secure cookie, can't be accessed via JavaScript
         // secure: process.env.NODE_ENV === 'production',  // Ensures cookie is sent over HTTPS in production
         sameSite: 'None',  // Allows cross-origin cookie
         maxAge: 24 * 60 * 60 * 1000 // Optional: Set the expiration time (1 day)
-    }).status(OK).json({ status: 1, message: "Sign in successful.", data: { ...user, token } })
+    }) */.status(OK).json({ status: 1, message: "Sign in successful.", data: { ...user, token } })
 }))
 
 userRoutes.use(userAuth);
+
+userRoutes.get("/get-user", TryCatch(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    if (user) {
+        res.status(OK).json({ status: 1, message: "User found successfully.", data: user })
+    } else {
+        res.status(BAD_REQUEST).json({ status: 0, message: "Failed to fetch user." })
+    }
+}))
 
 userRoutes.put("/update-address", TryCatch(async (req, res) => {
     const { address } = req?.body;

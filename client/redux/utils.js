@@ -3,7 +3,17 @@ import axios from "axios";
 
 export const TryCatch = async (url, args, method) => {
     try {
-        const response = await axios?.[method](`http://localhost:1000${url}`, args)
+        const headers = {
+            authorization: `Verify|${localStorage?.getItem("token")}`
+        }
+        console.log(headers, url, args, method)
+        // const response = await axios?.[method](`http://localhost:1000${url}`, args, headers)
+        const response = await axios({
+            method,
+            headers,
+            url: `http://localhost:1000${url}`,
+            data: args
+        })
         if (response) {
             return response?.data;
         }
@@ -32,7 +42,7 @@ export const defaultSlice = (name, { state, reducers = {}, extraReducers = [], c
     const defaultState = { loading: false }
     return createSlice({
         name,
-        initialState: state ? { ...state, defaultState } : defaultState,
+        initialState: state ? { ...state, ...defaultState } : defaultState,
         reducers,
         extraReducers: builder => extraReducers.forEach(action => {
             builder.addCase(action.pending, (...res) => handleBuilderCases([...res, customActions, terminateLoading]))
