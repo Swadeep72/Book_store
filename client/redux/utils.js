@@ -11,7 +11,7 @@ export const TryCatch = async (url, args, method) => {
         const response = await axios({
             method,
             headers,
-            url: `${process?.env?.VITE_API_URL ||"http://localhost:1000"}${url}`,
+            url: `${import.meta.env.API_URL ||"http://localhost:1000"}${url}`,
             data: args
         })
         if (response) {

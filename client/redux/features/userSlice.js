@@ -12,6 +12,7 @@ const customActions = {
         if (payload?.status) {
             console.log(state)
             state.isLogin = true;
+            state.role = payload?.data?.role;
         }
     }
 };
@@ -22,11 +23,14 @@ const reducers = {
     },
     logout: (state) => {
         state.isLogin = true;
+    },
+    setRole: (state) => {
+        state.role = "admin"
     }
 }
 
 const userSlice = defaultSlice("user", {
-    state: { isLogin: false },
+    state: { isLogin: false, role: "user" },
     reducers,
     extraReducers: [signUp, userLogin, updateAddress, getUserProfile],
     customActions
