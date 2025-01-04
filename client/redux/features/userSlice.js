@@ -7,12 +7,15 @@ export const updateAddress = createAsyncThunk("updateAddress", async () => await
 export const getUserProfile = createAsyncThunk("getUserProfile", async () => await TryCatch("/users/get-user", {}, "get"))
 
 const customActions = {
-    action: userLogin.fulfilled.type,
+    action: getUserProfile.fulfilled.type,
     fn: (state, { payload }) => {
         if (payload?.status) {
-            console.log(state)
+            console.log(payload?.data?.role)
+            console.log(payload?.data)
             state.isLogin = true;
             state.role = payload?.data?.role;
+            state.user = payload?.data;
+            localStorage.setItem("user", JSON.stringify(payload?.data))
         }
     }
 };
@@ -23,9 +26,6 @@ const reducers = {
     },
     logout: (state) => {
         state.isLogin = true;
-    },
-    setRole: (state) => {
-        state.role = "admin"
     }
 }
 

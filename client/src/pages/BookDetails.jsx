@@ -1,22 +1,65 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getBook } from '../../redux/features/bookSlice';
+import { deleteBook, getBook, updateBook } from '../../redux/features/bookSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { GrLanguage } from "react-icons/gr"
-import { MdOutlineDelete} from 'react-icons/md';
+import { MdOutlineDelete } from 'react-icons/md';
+import { addToFavouites, removeFavourites } from '../../redux/features/favouriteSlice';
+import { addToCart } from '../../redux/features/cartSlice';
+import { FaCartShopping, FaCreditCard, FaHeart } from 'react-icons/fa6';
+import { toast } from 'react-toastify';
+import { getUserProfile } from '../../redux/features/userSlice';
 
 const BookDetails = () => {
 
-    const { isLogin, role } = useSelector(({ user }) => user)
+    const { isLogin, user } = useSelector(({ user }) => user)
     const { id } = useParams();
     const [book, setBook] = useState([])
     const dispatch = useDispatch()
+    console.log({ isLogin, fav: user?.favourites })
 
     useEffect(() => {
         dispatch(getBook(id)).unwrap()
             .then(res => res?.status ? setBook(res?.data) : toast.error(res?.message))
             .catch(err => console.log(err))
     }, [])
+
+    const handleDelete = () => {
+        dispatch(deleteBook(id)).unwrap()
+            .then(({ status, message }) => toast[status ? "success" : "error"](message))
+            // .then(res => res?.status ? toast.success(res?.message) : toast.error(res?.message))
+            .catch(err => console.log(err))
+    }
+
+    const handleEdit = () => {
+        dispatch(updateBook(id)).unwrap()
+            .then(({ status, message }) => toast[status ? "success" : "error"](message))
+            // .then(res => res?.status ? toast.success(res?.message) : toast.error(res?.message))
+            .catch(err => console.log(err))
+    }
+
+    const handleFavourite = () => {
+        const action = user?.favourites?.includes(id) ? removeFavourites(id) : addToFavouites(id);
+        dispatch(action).unwrap()
+            // .then(({ status, message }) => toast[status ? "success" : "error"](message))
+            // .then(res => res?.status ? toast.success(res?.message) : toast.error(res?.message))
+            .then(res => {
+                if (res?.status) {
+                    toast.success(res?.message)
+                    dispatch(getUserProfile())
+                } else {
+                    toast.error(res?.message)
+                }
+            })
+            .catch(err => console.log(err))
+    }
+
+    const handleCart = () => {
+        dispatch(addToCart(id)).unwrap()
+            .then(({ status, message }) => toast[status ? "success" : "error"](message))
+            // .then(res => res?.status ? toast.success(res?.message) : toast.error(res?.message))
+            .catch(err => console.log(err))
+    }
 
     return (
         <>
@@ -25,21 +68,21 @@ const BookDetails = () => {
                     <div className='flex flex-col lg:flex-row justify-around bg-zinc-800 rounded p-12 '>
                         <img src={"https://m.media-amazon.com/images/I/713iGaS3K7L._SX342_SY445.jpg" || book?.url} alt={book?.title}
                             className='h-[50vh] md:h-[60vh] lg:h-[70vh] rounded' />
-                        {isLogin && role === "user" && <div className='flex flex-col md:flex-row lg:flex-col items-center justify-between lg:justify-start mt-4 lg:mt-0 flex items-center justify-center'>
-                            <button className='bg-white rounded lg:rounded-full text-3xl p-3 text-red-500'>
+                        {isLogin && <div className='flex flex-col md:flex-row lg:flex-col items-center justify-between lg:justify-start mt-4 lg:mt-0 flex items-center justify-center'>
+                            <button className={`bg-white rounded lg:rounded-full text-3xl p-3 text-${!user?.favourites?.includes(id) ? "zinc-800" : "red-500"} flex items-center justify-center`} onClick={handleFavourite}>
                                 <FaHeart /> <span className='ms-4 lg:hidden'>Add to favourites</span>
                             </button>
-                            <button className='text-white rounded mt-8 md:mt-0 lg:rounded-full text-3xl p-3 lg:mt-8 bg-blue-500 flex items-center justify-center'>
+                            <button className='text-white rounded mt-8 md:mt-0 lg:rounded-full text-3xl p-3 lg:mt-8 bg-blue-500 flex items-center justify-center' onClick={handleCart}>
                                 <FaCartShopping /> <span className='ms-4 lg:hidden'>Add to cart</span>
                             </button>
-                        </div>}
-                        {isLogin && role === "admin" && <div className='flex flex-col md:flex-row lg:flex-col items-center justify-between lg:justify-start mt-4 lg:mt-0 flex items-center justify-center'>
-                            <button className='bg-white rounded lg:rounded-full text-3xl p-3'>
-                                <FaEdit /> <span className='ms-4 lg:hidden'>Edit</span>
+                            {/* {isLogin && role === "admin" && <div className='flex flex-col md:flex-row lg:flex-col items-center justify-between lg:justify-start mt-4 lg:mt-0 flex items-center justify-center'> */}
+                            {isLogin && user?.role === "admin" && <> <button className='bg-white rounded mt-8 md:mt-0 lg:mt-8 lg:rounded-full text-3xl p-3 flex items-center justify-center' onClick={handleEdit}>
+                                <FaCreditCard /> <span className='ms-4 lg:hidden'>Edit</span>
                             </button>
-                            <button className='text-red-500 rounded mt-8 md:mt-0 lg:rounded-full text-3xl p-3 lg:mt-8 bg-white flex items-center justify-center'>
-                                <MdOutlineDelete /> <span className='ms-4 lg:hidden'>Delete book</span>
-                            </button>
+                                <button className='text-red-500 rounded mt-8 md:mt-0 lg:rounded-full text-3xl p-3 lg:mt-8 bg-white flex items-center justify-center' onClick={handleDelete}>
+                                    <MdOutlineDelete /> <span className='ms-4 lg:hidden'>Delete book</span>
+                                </button></>}
+                            {/* </div>} */}
                         </div>}
                     </div>
                 </div>

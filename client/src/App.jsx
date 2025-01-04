@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Loader from "./components/Loader/Loader";
 import { useDispatch } from "react-redux";
-import { login } from "../redux/features/userSlice";
+import { getUserProfile, login, setRole, setUserData } from "../redux/features/userSlice";
 import Favourites from "./components/Profile/Favourites";
 import OrderHistory from "./components/Profile/OrderHistory";
 import Settings from "./components/Profile/Settings";
@@ -24,6 +24,9 @@ export default function App() {
     document.body.classList.add("bg-zinc-900")
     if (localStorage.getItem("token") && localStorage.getItem("user")) {
       dispatch(login())
+      dispatch(getUserProfile())
+      // dispatch(setUserData(JSON.parse(localStorage?.getItem("user"))))
+      // dispatch(setRole(JSON.parse(localStorage?.getItem("user"))?.role))
     }
   }, [])
 
@@ -40,7 +43,7 @@ export default function App() {
           <Route path="/view-book-details/:id" element={<BookDetails />} />
           <Route path="/profile" element={<Profile />} >
             <Route index element={<Favourites />} />
-            <Route path="/profile/orderhistory" element={<OrderHistory/>}/>
+            <Route path="/profile/orderhistory" element={<OrderHistory />} />
             <Route path="/profile/settings" element={<Settings />} />
           </Route>
         </Routes>

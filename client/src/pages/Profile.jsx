@@ -19,8 +19,8 @@ const Profile = () => {
         }).catch(err => toast.error(err))
     }, [])
     return (
-        <div className="bg-zinc-900 px-2 md:px-12 flex flex-col md:flex-row h-screen py-8 gap-4 text-white">
-            <div className="w-full md:w-1/6">
+        <div className="bg-zinc-900 px-2 md:px-12 flex flex-col md:flex-row py-8 gap-4 text-white">
+            <div className="w-full md:w-1/6 h-screen">
                 <Sidebar user={profile} />
             </div>
             <div className="w-full md:w-5/6">

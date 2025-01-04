@@ -1,8 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { TryCatch, defaultSlice } from "../utils";
 
-export const addToCart = createAsyncThunk("addToCart", async () => await TryCatch("/carts/add-to-cart", {}, "post"))
-export const removeFromCart = createAsyncThunk("removeFromCart", async () => await TryCatch("/carts/remove-from-cart", {}, "post"))
+export const addToCart = createAsyncThunk("addToCart", async (id) => await TryCatch("/carts/add-to-cart", { bookId: id }, "post"))
+export const removeFromCart = createAsyncThunk("removeFromCart", async (id) => await TryCatch("/carts/remove-from-cart", { bookId: id }, "post"))
 export const getCart = createAsyncThunk("getCart", async () => await TryCatch("/carts/get-cart", {}, "get"))
 
 // const customActions = {

@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 const Navbar = () => {
 
     const { isLogin } = useSelector(({ user }) => user);
-    console.log(isLogin)
+    // console.log(isLogin)
     const handleHamburger = () => setPhoneNav(prev => prev === "hidden" ? "block" : "hidden")
     const [phoneNav, setPhoneNav] = useState("hidden");
     const links = [

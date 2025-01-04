@@ -1,7 +1,9 @@
 import { FaArrowRightFromBracket } from "react-icons/fa6"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 const Sidebar = ({ user }) => {
+
+    const navigate = useNavigate()
     return (
         <div className="bg-zinc-800 p-4 rounded flex flex-col items-center justify-between h-[100%]">
             <div className="flex items-center flex-col justify-center">
@@ -23,8 +25,12 @@ const Sidebar = ({ user }) => {
                     Settings
                 </Link>
             </div>
-            <button className="bg-zinc-900 w3/6 lg:w-full mt-4 lg:mt-0 text-white font-semibold flex items-center justify-center py-2 rounded transition-all duration-300 hover:text-zinc-900 ">
-                Log Out <FaArrowRightFromBracket className="ms-4"/>
+            <button className="bg-zinc-900 w3/6 lg:w-full mt-4 lg:mt-0 text-white font-semibold flex items-center justify-center py-2 rounded transition-all duration-300 hover:text-zinc-900" onClick={() => {
+                localStorage?.clear()
+                navigate("/")
+                window.location.reload()
+            }}>
+                Log Out <FaArrowRightFromBracket className="ms-4" />
             </button>
         </div>
     )

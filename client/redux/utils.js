@@ -6,7 +6,7 @@ export const TryCatch = async (url, args, method) => {
         const headers = {
             authorization: `Verify|${localStorage?.getItem("token")}`
         }
-        console.log(headers, url, args, method)
+        // console.log(headers, url, args, method)
         // const response = await axios?.[method](`http://localhost:1000${url}`, args, headers)
         const response = await axios({
             method,

@@ -1,9 +1,9 @@
 import { ErrorMessage, Field, Form, Formik } from "formik"
 import { useDispatch } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
+import { toast } from "react-toastify"
 import { object, string } from "yup"
-import { userLogin } from "../../redux/features/userSlice"
-import { toast } from "react-toastify";
+import { getUserProfile, userLogin } from "../../redux/features/userSlice"
 
 const Login = () => {
 
@@ -28,7 +28,9 @@ const Login = () => {
                                 toast.success(res?.message)
                                 document.cookie = `token=${res?.data?.token}`;
                                 localStorage.setItem("token", res?.data?.token)
-                                localStorage.setItem("user", JSON.stringify(res?.data))
+                                // localStorage.setItem("user", JSON.stringify(res?.data))
+                                dispatch(getUserProfile())
+                                // dispatch(setRole(res?.data?.role))
                                 navigate("/");
                             } else {
                                 toast.error(res?.message)

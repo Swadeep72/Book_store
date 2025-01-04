@@ -5,7 +5,7 @@ export const getRecentBooks = createAsyncThunk("getRecentBooks", async () => awa
 export const getAllBooks = createAsyncThunk("getAllBooks", async () => await TryCatch("/books/get-books", {}, "get"))
 export const addBook = createAsyncThunk("addBook", async () => await TryCatch("/books/add-book", {}, "post"))
 export const updateBook = createAsyncThunk("updateBook", async () => await TryCatch(`/books/book/${id}`, {}, "put"))
-export const deleteBook = createAsyncThunk("deleteBook", async () => await TryCatch(`/books/book/${id}`, {}, "delete"))
+export const deleteBook = createAsyncThunk("deleteBook", async (id) => await TryCatch(`/books/book/${id}`, {}, "delete"))
 export const getBook = createAsyncThunk("getBook", async (id) => await TryCatch(`/books/book/${id}`, {}, "get"))
 
 // const customActions = {
