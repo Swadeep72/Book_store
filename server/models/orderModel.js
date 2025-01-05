@@ -6,10 +6,10 @@ const orderSchema = timeStampSchema({
         type: mongoose.Types.ObjectId,
         ref: "User"
     },
-    books: [{
+    book: {
         type: mongoose.Types.ObjectId,
         ref: "Book"
-    }],
+    },
     status: {
         type: String,
         default: "Order Placed",

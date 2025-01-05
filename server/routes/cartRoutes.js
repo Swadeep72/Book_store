@@ -7,6 +7,7 @@ const cartRouter = express();
 cartRouter.post("/add-to-cart", TryCatch(async (req, res, next) => {
     const user = req.user;
     const { bookId } = req.body;
+    if (!bookId) return next([BAD_REQUEST, "Book details not found"]);
     if (user?.cart?.includes(bookId?.toString())) return next([BAD_REQUEST, "Book is already in your cart"]);
     await User.findByIdAndUpdate(user?._id, { $set: { cart: [...user.cart, bookId] } });
     res.status(OK).json({ status: 1, message: "Book added to your cart" })
@@ -15,6 +16,7 @@ cartRouter.post("/add-to-cart", TryCatch(async (req, res, next) => {
 cartRouter.post("/remove-from-cart", TryCatch(async (req, res, next) => {
     const user = req.user;
     const { bookId } = req.body;
+    if (!bookId) return next([BAD_REQUEST, "Book details not found"]);
     if (!user?.cart?.includes(bookId?.toString())) return next([BAD_REQUEST, "Book is already not in your cart"]);
     await User.findByIdAndUpdate(user?._id, { $pull: { cart: bookId } });
     res.status(OK).json({ status: 1, message: "Book removed from your cart" })

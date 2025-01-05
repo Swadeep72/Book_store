@@ -5,28 +5,31 @@ import { BAD_REQUEST, CREATED, OK, TryCatch } from "../utils/helperUtils.js";
 
 const orderRoutes = express()
 
-orderRoutes.post("/place-order", TryCatch(async (req, res) => {
+orderRoutes.post("/place-order", TryCatch(async (req, res, next) => {
     const user = req.user;
     const { bookIds } = req?.body;
-    const order = await new Order({ user: user?._id, books: bookIds })
-    const savedOrder = await order.save()
-    const updatedUser = await User.findByIdAndUpdate(user?._id, {
-        $push: {
-            orders: savedOrder?._id
-        },
-        cart: []
-    })
-    if (updatedUser) {
-        res.status(CREATED).json({ status: 1, message: "Order placed successfully", order: savedOrder })
-    } else {
-        res.status(BAD_REQUEST).json({ status: 0, message: "Failed to place order" })
+    if (!bookIds?.length) return next([BAD_REQUEST, "Please select at least one book"]);
+    for (const element of bookIds) {
+        const order = await new Order({ user: user?._id, book: element })
+        await order.save()
     }
+    // const updatedUser = await User.findByIdAndUpdate(user?._id, {
+    //     $push: {
+    //         orders: savedOrder?._id
+    //     },
+    //     cart: []
+    // })
+    // if (updatedUser) {
+    res.status(CREATED).json({ status: 1, message: "Order placed successfully" })
+    // } else {
+    //     res.status(BAD_REQUEST).json({ status: 0, message: "Failed to place order" })
+    // }
 }))
 
 orderRoutes.get("/get-all-orders", TryCatch(async (req, res) => {
     const user = req.user;
-    const orders = await User.findById(user?._id).populate({ path: "orders", populate: "books" }).select("orders")
-    res.status(OK).json({ status: 1, message: "Order fetched successfully", orders })
+    const orders = await Order.find({ user: user?._id }).populate("book")
+    res.status(OK).json({ status: 1, message: "Order fetched successfully", data: orders })
 }))
 
 orderRoutes.get("/get-order-details/:orderId", TryCatch(async (req, res) => {
