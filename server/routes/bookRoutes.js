@@ -58,4 +58,5 @@ bookRoutes.route("/book/:bookId")
         res.status(OK).json({ status: 1, message: "Book deleted successfully" })
     }))
 
+// printAllRoutes(bookRoutes)
 export default bookRoutes;

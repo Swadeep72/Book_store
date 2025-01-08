@@ -1,10 +1,10 @@
-import express from "express"
-import { validateUser } from "../utils/validationUtils.js";
-import User from "../models/userModel.js";
-import { compare, hash } from "bcrypt"
+import { compare, hash } from "bcrypt";
+import express from "express";
 import jwt from "jsonwebtoken";
 import userAuth from "../middlewares/auth.js";
+import User from "../models/userModel.js";
 import { BAD_REQUEST, OK, TryCatch } from "../utils/helperUtils.js";
+import { validateUser } from "../utils/validationUtils.js";
 const userRoutes = express()
 
 userRoutes.post("/sign-up", TryCatch(async (req, res) => {
@@ -60,5 +60,5 @@ userRoutes.put("/update-address", TryCatch(async (req, res) => {
         res.status(BAD_REQUEST).json({ status: 0, message: "Failed to update address." })
     }
 }))
-
+// printAllRoutes(userRoutes)
 export default userRoutes;

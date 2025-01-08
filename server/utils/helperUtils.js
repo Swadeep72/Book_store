@@ -24,3 +24,24 @@ export const INTERNAL_SERVER_ERROR = 500;
 export const BAD_GATEWAY = 502;
 export const SERVICE_UNAVAILABLE = 503;
 export const GATEWAY_TIMEOUT = 504;
+
+// Function to get all routes
+export function printAllRoutes(app) {
+    let routes = [];
+
+    function extractRoutes(stack, basePath = '') {
+        stack?.forEach(function (middleware) {
+            if (middleware?.route) {
+                routes.push({
+                    path: basePath + middleware?.route?.path,
+                    methods: Object?.keys(middleware?.route?.methods)?.join(", ")
+                });
+            } else if (middleware?.name === 'router') {
+                extractRoutes(middleware?.handle?.stack, basePath + middleware?.regexp?.source);
+            }
+        });
+    }
+
+    extractRoutes(app?._router?.stack);
+    return routes?.map(({ path, methods }) => `${path}: ${methods}`);
+}

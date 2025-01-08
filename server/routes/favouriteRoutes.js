@@ -2,9 +2,9 @@ import express from "express";
 import User from "../models/userModel.js";
 import { BAD_REQUEST, OK, TryCatch } from "../utils/helperUtils.js";
 
-const favouriteRouter = express();
+const favouriteRoutes = express();
 
-favouriteRouter.post("/add-to-favourites", TryCatch(async (req, res, next) => {
+favouriteRoutes.post("/add-to-favourites", TryCatch(async (req, res, next) => {
     const user = req.user;
     const { bookId } = req.body;
     if (!bookId) return next([BAD_REQUEST, "Book details not found"]);
@@ -13,7 +13,7 @@ favouriteRouter.post("/add-to-favourites", TryCatch(async (req, res, next) => {
     res.status(OK).json({ status: 1, message: "Book added to your favourites" })
 }))
 
-favouriteRouter.post("/remove-from-favourites", TryCatch(async (req, res, next) => {
+favouriteRoutes.post("/remove-from-favourites", TryCatch(async (req, res, next) => {
     const user = req.user;
     const { bookId } = req.body;
     if (!bookId) return next([BAD_REQUEST, "Book details not found"]);
@@ -22,10 +22,10 @@ favouriteRouter.post("/remove-from-favourites", TryCatch(async (req, res, next) 
     res.status(OK).json({ status: 1, message: "Book removed from your favourites" })
 }))
 
-favouriteRouter.get("/get-favourites", TryCatch(async (req, res) => {
+favouriteRoutes.get("/get-favourites", TryCatch(async (req, res) => {
     const { _id } = req.user;
     const { favourites } = await User.findById(_id).populate("favourites").select("favourites");
     res.status(OK).json({ status: 1, data: favourites })
 }))
-
-export default favouriteRouter;
+// printAllRoutes(favouriteRoutes)
+export default favouriteRoutes;

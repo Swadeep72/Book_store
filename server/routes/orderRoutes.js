@@ -1,6 +1,5 @@
 import express from "express";
 import Order from "../models/orderModel.js";
-import User from "../models/userModel.js";
 import { BAD_REQUEST, CREATED, OK, TryCatch } from "../utils/helperUtils.js";
 
 const orderRoutes = express()
@@ -52,4 +51,5 @@ orderRoutes.put("/update-status/:orderId", TryCatch(async (req, res) => {
     }
 }))
 
+// printAllRoutes(orderRoutes)
 export default orderRoutes;

@@ -2,9 +2,9 @@ import express from "express";
 import User from "../models/userModel.js";
 import { BAD_REQUEST, OK, TryCatch } from "../utils/helperUtils.js";
 
-const cartRouter = express();
+const cartRoutes = express();
 
-cartRouter.post("/add-to-cart", TryCatch(async (req, res, next) => {
+cartRoutes.post("/add-to-cart", TryCatch(async (req, res, next) => {
     const user = req.user;
     const { bookId } = req.body;
     if (!bookId) return next([BAD_REQUEST, "Book details not found"]);
@@ -13,7 +13,7 @@ cartRouter.post("/add-to-cart", TryCatch(async (req, res, next) => {
     res.status(OK).json({ status: 1, message: "Book added to your cart" })
 }))
 
-cartRouter.post("/remove-from-cart", TryCatch(async (req, res, next) => {
+cartRoutes.post("/remove-from-cart", TryCatch(async (req, res, next) => {
     const user = req.user;
     const { bookId } = req.body;
     if (!bookId) return next([BAD_REQUEST, "Book details not found"]);
@@ -22,10 +22,11 @@ cartRouter.post("/remove-from-cart", TryCatch(async (req, res, next) => {
     res.status(OK).json({ status: 1, message: "Book removed from your cart" })
 }))
 
-cartRouter.get("/get-cart", TryCatch(async (req, res) => {
+cartRoutes.get("/get-cart", TryCatch(async (req, res) => {
     const user = req.user;
     const { cart } = await User.findById(user?._id).populate("cart").select("cart");
     res.status(OK).json({ status: 1, data: cart })
 }))
 
-export default cartRouter;
+// printAllRoutes(cartRoutes)
+export default cartRoutes;
