@@ -18,7 +18,7 @@ bookRoutes.get("/get-books", TryCatch(async (req, res) => {
 
 bookRoutes.post("/add-book", userAuth, TryCatch(async (req, res, next) => {
     if (req.user.role !== "admin") return res.status(FORBIDDEN).json({ status: 0, message: "You are not authorized to add a book" })
-    const { url, title, author, description, price, language } = req.body;
+    const { url, title, author, description, price, language } = req.body?.book;
     const validate = validateBook({ url, title, author, description, price, language })
     if (!validate) return next([BAD_REQUEST, "Incorrect details."])
     const book = new Book({ url, title, author, description, price, language })
