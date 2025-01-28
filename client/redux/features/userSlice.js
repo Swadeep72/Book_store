@@ -3,15 +3,15 @@ import { TryCatch, defaultSlice } from "../utils";
 
 export const signUp = createAsyncThunk("signUp", async (val) => await TryCatch("/users/sign-up", val, "post"))
 export const userLogin = createAsyncThunk("userLogin", async (val) => await TryCatch("/users/sign-in", val, "post"))
-export const updateAddress = createAsyncThunk("updateAddress", async () => await TryCatch("/users/update-address", {}, "post"))
+export const updateAddress = createAsyncThunk("updateAddress", async (address) => await TryCatch("/users/update-address", { address }, "put"))
 export const getUserProfile = createAsyncThunk("getUserProfile", async () => await TryCatch("/users/get-user", {}, "get"))
 
 const customActions = {
     action: getUserProfile.fulfilled.type,
     fn: (state, { payload }) => {
         if (payload?.status) {
-            console.log(payload?.data?.role)
-            console.log(payload?.data)
+            // console.log(payload?.data?.role)
+            // console.log(payload?.data)
             state.isLogin = true;
             state.role = payload?.data?.role;
             state.user = payload?.data;
