@@ -3,6 +3,13 @@ export const TryCatch = fn => async (req, res, next) => {
         await fn(req, res, next);
     } catch (error) {
         console.log(error)
+        if (err.code === 11000) {
+            const field = Object.keys(err.keyValue)?.[0];
+            return next([INTERNAL_SERVER_ERROR, `The ${field} "${err.keyValue[field]}" already exists.`])
+            // return res.status(400).json({
+            // message: `The ${field} "${err.keyValue[field]}" already exists.`,
+            // });
+        }
         next([INTERNAL_SERVER_ERROR, error?.message])
     }
 }
